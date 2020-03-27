@@ -1,0 +1,7 @@
+numpy
+pandas
+plotly
+pystan
+fbprophet
+jupyter
+beautifulsoup4
