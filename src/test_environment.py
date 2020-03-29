@@ -28,7 +28,6 @@ import time
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 from multiprocessing import Process
-from urllib.parse import urlencode
 import requests
 
 
@@ -66,18 +65,6 @@ def get_hash(username, password, public_key_filename):
     encoded_hash = base64.b64encode(encrypted_hash)
 
     return encoded_hash
-
-def send_http_request(conn, method, uri, params, headers):
-    """
-    Send a HTTP request
-    """
-    conn.request(method, uri, params, headers)
-    r = conn.getresponse()
-    print("<< HTTP request " + method + " " + uri)
-    response = r.read().decode('utf-8')
-    j = json.loads(response)
-    print(json.dumps(j, indent=4, sort_keys=True))
-    return j
 
 def connect_to_feed(public_feed_hostname, public_feed_port):
     """
@@ -159,37 +146,6 @@ def main():
     auth_hash = get_hash(USERNAME, PASSWORD, PUBLIC_KEY_FILENAME)
 
     headers = {"Accept": "application/json"}
-    conn = http.client.HTTPSConnection(API_URL)
-
-    # Check NEXT API status. Check NEXT API documentation page to verify the path
-    print("Checking NEXT API status...")
-    uri = '/next/' + API_VERSION + '/'
-    j = send_http_request(conn, 'GET', uri, '', headers)
-
-    # POST login to NEXT API. Check NEXT API documentation page to verify the path
-    """
-    print("Logging in NEXT API...")
-    uri = '/next/' + API_VERSION + '/login'
-    params = urlencode({'service': SERVICE_NAME, 'auth': auth_hash})
-    j = send_http_request(conn, 'POST', uri, params, headers)
-    """
-
-    # Store NEXT API login response data
-    """
-    public_feed_hostname = j["public_feed"]["hostname"]
-    public_feed_port = j["public_feed"]["port"]
-    our_session_key = j["session_key"]
-    """
-
-    # Get markets
-    """
-    print("Get market information")
-    headers = {"Accept": "application/json"}
-    uri = '/next/' + API_VERSION + '/markets'
-    params = urlencode({'service': SERVICE_NAME, 'auth': (our_session_key, our_session_key)})
-    j = send_http_request(conn, 'GET', uri, params, headers)
-
-    """
 
     # Alternative login
     print("Test login")
