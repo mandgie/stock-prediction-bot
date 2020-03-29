@@ -29,6 +29,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 from multiprocessing import Process
 from urllib.parse import urlencode
+import requests
 
 
 # global variables with static information about nExt API
@@ -175,6 +176,23 @@ def main():
     public_feed_hostname = j["public_feed"]["hostname"]
     public_feed_port = j["public_feed"]["port"]
     our_session_key = j["session_key"]
+
+    # Get markets
+    """
+    print("Get market information")
+    headers = {"Accept": "application/json"}
+    uri = '/next/' + API_VERSION + '/markets'
+    params = urlencode({'service': SERVICE_NAME, 'auth': (our_session_key, our_session_key)})
+    j = send_http_request(conn, 'GET', uri, params, headers)
+
+    """
+
+    markets = requests.get('https://api.test.nordnet.se/next/2/markets/', auth=(our_session_key, our_session_key), headers=headers)
+    print("Get countries")
+    for c in markets.text:
+        print(c)
+
+
 
     # Establish connection to public feed
     print("\nConnecting to feed " + str(public_feed_hostname) + ":" + str(public_feed_port) + "...\n")
